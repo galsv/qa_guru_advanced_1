@@ -79,6 +79,23 @@ def test_users_pagination_positive(app_url, total, page, size, pages):
     assert response_body['size'] == size
 
 
+@pytest.mark.parametrize('total, page, size, pages, return_items', [
+    (12, 3, 7, 2, 0),
+    (12, 10, 10, 2, 0),
+    (12, 3, 5, 3, 2),
+    (12, 1, 10, 2, 10)
+])
+def test_users_pagination_different_page(app_url, total, page, size, pages, return_items):
+    response = requests.get(f"{app_url}/api/users/", params=dict(page=page, size=size))
+    assert response.status_code == HTTPStatus.OK
+    response_body = response.json()
+    assert len(response_body['items']) == return_items
+    assert response_body['total'] == total
+    assert response_body['page'] == page
+    assert response_body['pages'] == pages
+    assert response_body['size'] == size
+
+
 @pytest.mark.parametrize("size", [0, -1])
 def test_users_pagination_negative(app_url, size):
     response = requests.get(f"{app_url}/api/users/?size={size}")
