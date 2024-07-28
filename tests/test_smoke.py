@@ -4,7 +4,7 @@ import requests
 
 from http import HTTPStatus
 from urllib.parse import urlparse
-from models.app_status import AppStatus
+from app.models.app_status import AppStatus
 
 
 @pytest.fixture
