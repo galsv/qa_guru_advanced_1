@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "qa-guru-advanced-1"
+version = "0.1.0"
+description = ""
+authors = ["Sergey Galtsov <galtsovsergey@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.111.1"
+pytest = "^8.3.2"
+fastapi-pagination = "^0.12.26"
+python-dotenv = "^1.0.1"
+requests = "^2.32.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
