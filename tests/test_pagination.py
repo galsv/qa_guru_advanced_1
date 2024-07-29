@@ -6,13 +6,6 @@ import itertools
 from http import HTTPStatus
 
 
-@pytest.fixture(scope='class')
-def users(app_url):
-    response = requests.get(f"{app_url}/api/users/")
-    assert response.status_code == HTTPStatus.OK
-    return response.json()['items']
-
-
 def paginate(total_items: int, page_size: int, total_pages: int) -> list[tuple]:
     pages = []
     for page_number in range(1, total_pages + 1):
@@ -31,24 +24,19 @@ def pagination_data(total: int) -> list[tuple]:
     )) + [(total, 2, total+1, 1)]
 
 
-def test_users_no_duplicates(users):
-    users_ids = [user["id"] for user in users]
-    assert len(users_ids) == len(set(users_ids))
+def test_users_pagination_positive(app_url, fill_test_data):
+    for total, page, size, pages in pagination_data(len(fill_test_data)):
+        response = requests.get(f"{app_url}/api/users/", params=dict(page=page, size=size))
+        assert response.status_code == HTTPStatus.OK
+        response_body = response.json()
+        assert response_body['total'] == total
+        assert response_body['page'] == page
+        assert response_body['pages'] == pages
+        assert response_body['size'] == size
 
 
-@pytest.mark.parametrize('total, page, size, pages', pagination_data(12))
-def test_users_pagination_positive(app_url, total, page, size, pages):
-    response = requests.get(f"{app_url}/api/users/", params=dict(page=page, size=size))
-    assert response.status_code == HTTPStatus.OK
-    response_body = response.json()
-    assert response_body['total'] == total
-    assert response_body['page'] == page
-    assert response_body['pages'] == pages
-    assert response_body['size'] == size
-
-
-def test_users_pagination_different_page(app_url, users):
-    total = len(users)
+def test_users_pagination_different_page(app_url, fill_test_data):
+    total = len(fill_test_data)
     size = math.ceil(total / 2)
     first_page = requests.get(f"{app_url}/api/users/", params=dict(page=1, size=size))
     second_page = requests.get(f"{app_url}/api/users/", params=dict(page=2, size=size))

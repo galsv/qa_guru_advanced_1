@@ -43,4 +43,4 @@ def test_check_users_status(app_url):
     users_status = response.json()
     AppStatus.model_validate(response.json())
     assert response.status_code == HTTPStatus.OK, f'HTTPS Status code is not OK, it is {response.status_code}'
-    assert users_status['users'] is True, 'Users did not add'
+    assert users_status['database'] is True, 'Users did not add'
