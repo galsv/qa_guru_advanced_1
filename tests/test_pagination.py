@@ -31,7 +31,12 @@ def pagination_data(total: int) -> list[tuple]:
     )) + [(total, 2, total+1, 1)]
 
 
-@pytest.mark.parametrize('total, page, size, pages', pagination_data(user_length()))
+def test_users_no_duplicates(users):
+    users_ids = [user["id"] for user in users]
+    assert len(users_ids) == len(set(users_ids))
+
+
+@pytest.mark.parametrize('total, page, size, pages', pagination_data(12))
 def test_users_pagination_positive(app_url, total, page, size, pages):
     response = requests.get(f"{app_url}/api/users/", params=dict(page=page, size=size))
     assert response.status_code == HTTPStatus.OK
@@ -60,8 +65,3 @@ def test_users_pagination_negative(app_url, size):
     assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
     errors = response.json()['detail']
     assert any('Input should be greater than or equal to 1' in error['msg'] for error in errors)
-
-
-def test_users_no_duplicates(users):
-    users_ids = [user["id"] for user in users]
-    assert len(users_ids) == len(set(users_ids))
