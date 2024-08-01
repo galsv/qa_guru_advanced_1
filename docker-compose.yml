@@ -27,7 +27,7 @@ services:
     # Use github secrets
       POSTGRES_PASSWORD:
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - db-models:/var/lib/postgresql/models
     ports:
       - 5432:5432
 

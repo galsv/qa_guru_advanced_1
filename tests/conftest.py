@@ -3,6 +3,7 @@ import requests
 import dotenv
 import pytest
 import json
+from faker import Faker
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -13,6 +14,11 @@ def envs():
 @pytest.fixture(scope='session')
 def app_url():
     return os.getenv("APP_URL")
+
+
+@pytest.fixture(scope="session")
+def fake_data():
+    return Faker()
 
 
 @pytest.fixture(scope="module")
